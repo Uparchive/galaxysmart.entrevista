@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação de Candidato</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h1>Avaliação de Candidato</h1>
+
+    <div class="input-group">
+        <label for="nome">Nome do Candidato:</label>
+        <input type="text" id="nome" placeholder="Digite o nome" required>
+
+        <label for="sexo">Sexo:</label>
+        <select id="sexo">
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <label>Tem disponibilidade de horário?</label>
+        <select id="disponibilidade">
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+            <option value="Só pela manhã">Só pela manhã</option>
+            <option value="Só no período da tarde">Só no período da tarde</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <label>Já trabalhou com vendas?</label>
+        <select id="vendas">
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <label>Aceita fazer horas extras?</label>
+        <select id="horasExtras">
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <label>Quantos ônibus para chegar no serviço?</label>
+        <select id="onibus">
+            <option value="1">1 Ônibus</option>
+            <option value="2">2 Ônibus</option>
+            <option value="3">3 Ônibus</option>
+            <option value="Mais">Mais</option>
+        </select>
+        <textarea id="onibusPersonalizado" placeholder="Resposta personalizada (opcional)" rows="2"></textarea>
+    </div>
+
+    <div class="question">
+        <label>Pretende ficar quanto tempo?</label>
+        <textarea id="tempo" rows="2" placeholder="Digite a resposta"></textarea>
+    </div>
+
+    <div class="question">
+        <label>O horário e escala podem ser alterados, você aceita?</label>
+        <select id="horarioAlterado">
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+        </select>
+    </div>
+
+    <div class="button-group">
+        <button onclick="finalizarEntrevista()">Finalizar Entrevista</button>
+        <button id="descartar" onclick="confirmarDescartar()">Descartar Entrevista</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
