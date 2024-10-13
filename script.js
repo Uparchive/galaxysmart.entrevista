@@ -1,15 +1,19 @@
 // Função para salvar os dados no localStorage
 function salvarDados() {
     const dados = {
-        nome: document.getElementById("nome").value,
-        sexo: document.getElementById("sexo").value,
-        disponibilidade: document.getElementById("disponibilidade").value,
-        vendas: document.getElementById("vendas").value,
-        horasExtras: document.getElementById("horasExtras").value,
-        onibus: document.getElementById("onibus").value,
-        onibusPersonalizado: document.getElementById("onibusPersonalizado").value,
-        tempo: document.getElementById("tempo").value,
-        horarioAlterado: document.getElementById("horarioAlterado").value
+        nome: document.getElementById("nome")?.value || '',
+        sexo: document.getElementById("sexo")?.value || 'Masculino',
+        disponibilidade: document.getElementById("disponibilidade")?.value || 'Sim',
+        vendas: document.getElementById("vendas")?.value || 'Sim',
+        horasExtras: document.getElementById("horasExtras")?.value || 'Sim',
+        onibus: document.getElementById("onibus")?.value || '1',
+        onibusPersonalizado: document.getElementById("onibusPersonalizado")?.value || '',
+        tempo: document.getElementById("tempo")?.value || '',
+        horarioAlterado: document.getElementById("horarioAlterado")?.value || 'Sim',
+        comunicacao: document.getElementById("comunicacao")?.value || 'Comunicativo',
+        consideracao: document.getElementById("consideracao")?.value || '',
+        tipoPontuacao: document.getElementById("tipoPontuacao")?.value || 'Automatica',
+        pontuacaoManual: document.getElementById("pontuacaoManual")?.value || ''
     };
     localStorage.setItem('dadosEntrevista', JSON.stringify(dados));
 }
@@ -18,15 +22,20 @@ function salvarDados() {
 function carregarDados() {
     const dadosSalvos = JSON.parse(localStorage.getItem('dadosEntrevista'));
     if (dadosSalvos) {
-        document.getElementById("nome").value = dadosSalvos.nome || '';
-        document.getElementById("sexo").value = dadosSalvos.sexo || 'Masculino';
-        document.getElementById("disponibilidade").value = dadosSalvos.disponibilidade || 'Sim';
-        document.getElementById("vendas").value = dadosSalvos.vendas || 'Sim';
-        document.getElementById("horasExtras").value = dadosSalvos.horasExtras || 'Sim';
-        document.getElementById("onibus").value = dadosSalvos.onibus || '1';
-        document.getElementById("onibusPersonalizado").value = dadosSalvos.onibusPersonalizado || '';
-        document.getElementById("tempo").value = dadosSalvos.tempo || '';
-        document.getElementById("horarioAlterado").value = dadosSalvos.horarioAlterado || 'Sim';
+        document.getElementById("nome").value = dadosSalvos.nome;
+        document.getElementById("sexo").value = dadosSalvos.sexo;
+        document.getElementById("disponibilidade").value = dadosSalvos.disponibilidade;
+        document.getElementById("vendas").value = dadosSalvos.vendas;
+        document.getElementById("horasExtras").value = dadosSalvos.horasExtras;
+        document.getElementById("onibus").value = dadosSalvos.onibus;
+        document.getElementById("onibusPersonalizado").value = dadosSalvos.onibusPersonalizado;
+        document.getElementById("tempo").value = dadosSalvos.tempo;
+        document.getElementById("horarioAlterado").value = dadosSalvos.horarioAlterado;
+        document.getElementById("comunicacao").value = dadosSalvos.comunicacao;
+        document.getElementById("consideracao").value = dadosSalvos.consideracao;
+        document.getElementById("tipoPontuacao").value = dadosSalvos.tipoPontuacao;
+        document.getElementById("pontuacaoManual").value = dadosSalvos.pontuacaoManual;
+        togglePontuacaoManual();
     }
 }
 
@@ -35,13 +44,27 @@ window.onload = carregarDados;
 
 // Função para calcular a pontuação
 function calcularPontuacao() {
+    const tipoPontuacao = document.getElementById("tipoPontuacao")?.value;
+
+    if (tipoPontuacao === "Manual") {
+        const pontuacaoManual = parseInt(document.getElementById("pontuacaoManual")?.value, 10);
+        if (!isNaN(pontuacaoManual) && pontuacaoManual >= 0 && pontuacaoManual <= 10) {
+            return pontuacaoManual;
+        } else {
+            alert("Por favor, insira uma pontuação manual válida entre 0 e 10.");
+            return 0;
+        }
+    }
+
+    // Pontuação automática
     let pontuacao = 0;
 
-    const disponibilidade = document.getElementById("disponibilidade").value;
-    const vendas = document.getElementById("vendas").value;
-    const horasExtras = document.getElementById("horasExtras").value;
-    const onibus = document.getElementById("onibus").value;
-    const horarioAlterado = document.getElementById("horarioAlterado").value;
+    const disponibilidade = document.getElementById("disponibilidade")?.value;
+    const vendas = document.getElementById("vendas")?.value;
+    const horasExtras = document.getElementById("horasExtras")?.value;
+    const onibus = document.getElementById("onibus")?.value;
+    const horarioAlterado = document.getElementById("horarioAlterado")?.value;
+    const comunicacao = document.getElementById("comunicacao")?.value;
 
     if (disponibilidade === "Sim") pontuacao += 2;
     if (disponibilidade === "Só pela manhã" || disponibilidade === "Só no período da tarde") pontuacao += 1;
@@ -50,6 +73,10 @@ function calcularPontuacao() {
     if (onibus === "1") pontuacao += 2;
     if (onibus === "2") pontuacao += 1;
     if (horarioAlterado === "Sim") pontuacao += 2;
+    if (comunicacao === "Comunicativo") pontuacao += 2;
+    else if (comunicacao === "Pouco comunicativo") pontuacao += 1;
+
+    if (pontuacao > 10) pontuacao = 10; // Limitar pontuação máxima a 10
 
     return pontuacao;
 }
@@ -58,15 +85,17 @@ function calcularPontuacao() {
 function finalizarEntrevista() {
     salvarDados(); // Salva os dados antes de finalizar
 
-    const nome = document.getElementById("nome").value;
-    const sexo = document.getElementById("sexo").value;
-    const disponibilidade = document.getElementById("disponibilidade").value;
-    const vendas = document.getElementById("vendas").value;
-    const horasExtras = document.getElementById("horasExtras").value;
-    const onibus = document.getElementById("onibus").value;
-    const onibusPersonalizado = document.getElementById("onibusPersonalizado").value || "N/A";
-    const tempo = document.getElementById("tempo").value || "N/A";
-    const horarioAlterado = document.getElementById("horarioAlterado").value;
+    const nome = document.getElementById("nome")?.value;
+    const sexo = document.getElementById("sexo")?.value;
+    const disponibilidade = document.getElementById("disponibilidade")?.value;
+    const vendas = document.getElementById("vendas")?.value;
+    const horasExtras = document.getElementById("horasExtras")?.value;
+    const onibus = document.getElementById("onibus")?.value;
+    const onibusPersonalizado = document.getElementById("onibusPersonalizado")?.value || "N/A";
+    const tempo = document.getElementById("tempo")?.value || "N/A";
+    const horarioAlterado = document.getElementById("horarioAlterado")?.value;
+    const comunicacao = document.getElementById("comunicacao")?.value;
+    const consideracao = document.getElementById("consideracao")?.value || "N/A";
 
     const pontuacao = calcularPontuacao();
 
@@ -94,37 +123,28 @@ function finalizarEntrevista() {
     const marginLeft = 20;
     const lineHeight = 10;
     let currentY = 35;
-    const pageHeight = 297; // Altura da página A4 em mm (altura padrão)
-    const pageWidth = 170;  // Reduzimos a largura para ter mais margem à direita (antes era 190)
-
-    // Função para verificar se há espaço suficiente na página
-    function verificarEspacoRestante() {
-        if (currentY + lineHeight >= pageHeight - 20) { // Deixa uma margem de 20mm na parte inferior
-            doc.addPage(); // Adiciona uma nova página
-            currentY = 20; // Reinicia a posição Y na nova página
-        }
-    }
+    const pageHeight = 297; // Altura da página A4 em mm
 
     // Função auxiliar para adicionar a pergunta e resposta formatada
     function adicionarPerguntaResposta(pergunta, resposta) {
-        verificarEspacoRestante(); // Verifica se precisa adicionar uma nova página antes de adicionar conteúdo
+        // Verificar se há espaço suficiente na página
+        if (currentY + lineHeight * 2 >= pageHeight - 20) { // Deixa uma margem de 20mm na parte inferior
+            doc.addPage(); // Adiciona uma nova página
+            currentY = 20; // Reinicia a posição Y na nova página
+        }
 
-        // Adiciona a pergunta
-        doc.setFont("helvetica", "normal");
+        // Adicionar pergunta
+        doc.setFont("helvetica", "bold");
         doc.text(pergunta, marginLeft, currentY);
         currentY += lineHeight;
 
-        verificarEspacoRestante(); // Verifica novamente após adicionar a pergunta
-
-        // Adiciona "Resposta:" em negrito
+        // Adicionar descrição "Resposta:" em negrito e a resposta
         doc.setFont("helvetica", "bold");
-        doc.text("Resposta: ", marginLeft, currentY, { baseline: 'alphabetic' });
-
-        // Adiciona a resposta, dividindo em múltiplas linhas se for muito longa
+        doc.text("Resposta:", marginLeft, currentY); currentY += lineHeight;
         doc.setFont("helvetica", "normal");
-        const linhasResposta = doc.splitTextToSize(resposta, pageWidth - marginLeft); // Ajusta para a nova largura
-        doc.text(linhasResposta, marginLeft + 25, currentY); // desloca a resposta um pouco para a direita
-        currentY += (linhasResposta.length * lineHeight) + 5; // ajusta a posição Y de acordo com o número de linhas
+        const linhasResposta = doc.splitTextToSize(resposta, 160);
+        doc.text(linhasResposta, marginLeft + 15, currentY);
+        currentY += (linhasResposta.length * lineHeight) + 5;
     }
 
     // Adiciona conteúdo ao PDF com perguntas e respostas formatadas
@@ -137,17 +157,14 @@ function finalizarEntrevista() {
     adicionarPerguntaResposta("Resposta personalizada:", onibusPersonalizado);
     adicionarPerguntaResposta("Pretende ficar quanto tempo?", tempo);
     adicionarPerguntaResposta("O horário e escala podem ser alterados, você aceita?", horarioAlterado);
+    adicionarPerguntaResposta("Comunicação:", comunicacao);
+    adicionarPerguntaResposta("Consideração do Avaliador:", consideracao);
 
     // Adicionar pontuação final com destaque
-    verificarEspacoRestante(); // Verifica se há espaço antes de adicionar a pontuação final
+    currentY += lineHeight;
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
     doc.text(`Pontuação Final: ${pontuacao}/10`, marginLeft, currentY);
-
-    // Adicionar uma linha final decorativa
-    currentY += lineHeight + 5;
-    doc.setLineWidth(0.5);
-    doc.line(20, currentY, 190, currentY);
 
     // Salvar o PDF
     doc.save(`${nome}_avaliacao.pdf`);
@@ -158,6 +175,18 @@ function confirmarDescartar() {
     if (confirm("Você tem certeza que deseja descartar?")) {
         localStorage.removeItem('dadosEntrevista');
         location.reload();
+    }
+}
+
+// Função para alternar entre pontuação automática e manual
+function togglePontuacaoManual() {
+    const tipoPontuacao = document.getElementById("tipoPontuacao")?.value;
+    const pontuacaoManualDiv = document.getElementById("pontuacaoManualDiv");
+
+    if (tipoPontuacao === "Manual") {
+        pontuacaoManualDiv.style.display = "block";
+    } else {
+        pontuacaoManualDiv.style.display = "none";
     }
 }
 
